@@ -23,6 +23,7 @@
                 "historycheck"  : 336,
                 "emamethod"     : 0,
                 "orderprice"    : 15,
+                "enable"        : 1,
                 "nextbuyorder"  : 0.975
             },
             "sell": {
