@@ -1,7 +1,7 @@
 {
 "API" :
     {
-        "url" : "https://api.binance.com/api/v3"
+        "url" : "https://api.bybit.com"
     },
 "WSS" :
     {
