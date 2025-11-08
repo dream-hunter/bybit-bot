@@ -1,0 +1,37 @@
+{
+"API" :
+    {
+        "url" : "https://api.binance.com/api/v3"
+    },
+"WSS" :
+    {
+        "host" : "stream.bybit.com",
+        "port" : "443"
+
+    },
+"Markets" :
+    {
+        "BTCUSDT" : {
+            "buy" : {
+                "trend"         : 0,
+                "maxtrend"      : 1000,
+                "stepforward"   : 2,
+                "stepback"      : 3,
+                "diffratelow"   : 0.15,
+                "diffratehigh"  : 0.3,
+                "minspread"     : -7,
+                "historycheck"  : 336,
+                "emamethod"     : 0,
+                "orderprice"    : 15,
+                "nextbuyorder"  : 0.975
+            },
+            "sell": {
+                "trend"         : 0,
+                "maxtrend"      : 1000,
+                "stepforward"   : 2,
+                "stepback"      : 3,
+                "nextsellorder" : 0.03
+            }
+        }
+    }
+}
