@@ -102,8 +102,9 @@ while (1) {
                 my $analysis = MarketAnalysis::marketCheck($datapool->{$marketname}, $loglevel);
                 if (defined $config->{'API'}->{'apikey'} && $config->{'API'}->{'apisecret'}) {
                     logMessage(sprintf("Market $marketname:\n%s", Dumper $analysis), 4, $loglevel);
-                    $datapool->{$marketname} = TradeHandlers::tradeHandle($marketname, $datapool->{$marketname}, $analysis, $config->{'API'}, $loglevel);
-                    exit 0;
+                    $datapool->{$marketname} = TradeHandlers::tradeHandle($marketname, $datapool->{$marketname}, $analysis, $config, $loglevel);
+                } else {
+                    logMessage("There is no API key/secret has been provided\n", 4, $loglevel);                    
                 }
             }
         }

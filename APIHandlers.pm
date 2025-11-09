@@ -22,7 +22,13 @@ use ServiceSubs;
 
 $VERSION     = 1.00;
 @ISA         = qw(Exporter);
-@EXPORT      = qw(getMarkets getKlines wssFrameDecoder);
+@EXPORT      = qw(
+    getMarkets
+    getKlines
+    wssFrameDecoder
+    getOrdersRealTime
+    cancelAllOrders
+);
 
 sub getMarkets {
     my $config   = $_[0];
@@ -127,6 +133,58 @@ sub wssFrameDecoder {
         return $decoded;
     }
     return undef;
+}
+
+sub getOrdersRealTime {
+    my $orderId    = $_[0];
+    my $marketname = $_[1];
+    my $config     = $_[2];
+    my $loglevel   = $_[3];
+    my $result     = undef;
+    my $api        = $config->{'API'};
+    #print Dumper $orderId;
+    logMessage("Getting order status:\n", 3, $loglevel);
+    my $endpoint = $api->{'url'} . "/v5/order/realtime";
+    my $parameters = "category=spot";
+    if (defined $orderId) {
+        $parameters .= "&orderId=".$orderId;
+    }
+    if (defined $marketname) {
+        $parameters .= "&symbol=".$marketname;
+    }
+    my $method = "GET";
+    my ($result, $ping) = rest_api($endpoint, $parameters, $api, $method, $loglevel);
+    $result = getHashedArray($result->{'list'}, 'orderId');
+
+    return $result
+}
+
+sub cancelAllOrders {
+    my $marketname = $_[0];
+    my $api        = $_[1];
+    my $loglevel   = $_[2];
+    logMessage(sprintf("Cancel all orders for %s market:\n", $marketname), 3, $loglevel);
+    my $endpoint = $api->{'url'} . "/v5/order/cancel-all";
+    my $parameters = {
+        "category"         => "spot",
+        "symbol"           => $marketname,
+    };
+    my $method = "POST";
+    my ($result, $ping) = rest_api($endpoint, $parameters, $api, $method, $loglevel);
+
+    return $result;
+}
+
+sub postOrder {
+    my $parameters = $_[0];
+    my $api        = $_[1];
+    my $loglevel   = $_[2];
+    my $endpoint = $api->{'url'} . "/v5/order/create";
+    my $method = "POST";
+    my ($result, $ping) = rest_api($endpoint, $parameters, $api, $method, $loglevel);
+    logMessage(sprintf("%s", Dumper $result), 3, $loglevel);
+
+    return $result;
 }
 
 1;

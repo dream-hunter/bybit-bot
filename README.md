@@ -33,6 +33,11 @@ cp config.json.example config.json
 
 ## ChangeLog
 
+### 2025-11-09
+
+- finished buy and sell mechanism
+- beta-test
+
 ### 2025-11-08
 
 - First push to github
