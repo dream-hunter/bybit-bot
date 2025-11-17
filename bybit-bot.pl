@@ -1,4 +1,3 @@
-
 #!/usr/bin/env perl
 
 # Standard libs
@@ -178,22 +177,23 @@ while (1) {
 #################################
 # Public subscription
 #################################
-    $req_id->{'pub'} ++;
-    my @pub_args;
     foreach my $marketname (keys %{ $datapool }) {
+        $req_id->{'pub'} ++;
+        my @pub_args;
 #        push(@pub_args, "publicTrade.$marketname");
         push(@pub_args, "kline.5.$marketname");
         push(@pub_args, "kline.60.$marketname");
         push(@pub_args, "kline.M.$marketname");
         push(@pub_args, "tickers.$marketname");
+
+        my $datasend = {
+            "req_id" => $req_id->{'pub'},
+            "op" => "subscribe",
+            "args" => [ @pub_args ]
+        };
+        print Dumper $datasend;
+        $client->{'pub'}->send_text_frame( encode_json($datasend) );
     }
-    my $datasend = {
-        "req_id" => $req_id->{'pub'},
-        "op" => "subscribe",
-        "args" => [ @pub_args ]
-    };
-    print Dumper $datasend;
-    $client->{'pub'}->send_text_frame( encode_json($datasend) );
 #################################
 # Private subscription
 #################################
@@ -233,8 +233,8 @@ while (1) {
 #################################
 # Wait and Restart
 #################################
-    logMessage("Wait 10 seconds before reconnect.\n", 2, $loglevel);
-    sleep 10;
+    logMessage("Wait 300 seconds before reconnect.\n", 2, $loglevel);
+    sleep 300;
     logMessage("Start again...\n", 2, $loglevel);
 }
 #################################
