@@ -55,7 +55,8 @@ sub buyCheck {
     if (!defined $datapool->{'analysis'}->{'orderlow'}) {
         logMessage("\t0. There is no orders in database;\n", 2, $loglevel);
     } else {
-        my $orderlow = $datapool->{'analysis'}->{'orderlow'};
+        my $orderlowid = $datapool->{'analysis'}->{'orderlow'};
+        my $orderlow   = $datapool->{'orders'}->{'closed'}->{'buy'}->{$orderlowid};
         my $nextbuyorder = $datapool->{'config'}->{'buy'}->{'nextbuyorder'};
         if (($orderlow->{'price'} * $nextbuyorder) <= $lastprice) {
             logMessage(sprintf("\t0. Order with lowest price: %s is greater than next-buy-order price %s - bad\n", $lastprice, ($orderlow->{'price'} * $nextbuyorder)), 3, $loglevel);
@@ -189,6 +190,9 @@ sub sellCheck {
     my $loglevel = $_[1];
     my $result   = 1;
 
+    my $orderlowid = undef;
+    my $orderlow   = undef;
+
     logMessage(" SELL:\n", 3, $loglevel);
     if (defined $datapool->{'config'}->{'sell'}->{'enable'} && $datapool->{'config'}->{'sell'}->{'enable'} == 0) {
         logMessage("\t0. Sell diabled.\n", 2, $loglevel);
@@ -202,7 +206,10 @@ sub sellCheck {
         $result = 0;
         return $result;
     } else {
-        my $orderlow = $datapool->{'analysis'}->{'orderlow'};
+        # my $orderlow = $datapool->{'analysis'}->{'orderlow'};
+        $orderlowid = $datapool->{'analysis'}->{'orderlow'};
+        $orderlow   = $datapool->{'orders'}->{'closed'}->{'buy'}->{$orderlowid};
+
         my $nextsellorder = $orderlow->{'price'} * (1 + $datapool->{'config'}->{'sell'}->{'nextsellorder'});
         if ($nextsellorder >= $lastprice) {
             logMessage(sprintf("\t0. Nextsellorder %s is greater than lastprice %s - bad\n", $nextsellorder, $lastprice), 3, $loglevel);
@@ -213,8 +220,8 @@ sub sellCheck {
         }
     }
 # Stoploss
-    if (defined $datapool->{'config'}->{'sell'}->{'stoploss'}) {
-        if ($lastprice < $datapool->{'analysis'}->{'orderlow'}->{'price'} * $datapool->{'config'}->{'sell'}->{'stoploss'}) {
+    if (defined $datapool->{'config'}->{'sell'}->{'stoploss'} && defined $orderlowid && defined $orderlow) {
+        if ($lastprice < $orderlow->{'price'} * $datapool->{'config'}->{'sell'}->{'stoploss'}) {
             logMessage("\t1. Stoploss value exceeded.\n", 2, $loglevel);
             $result = 1;
             return $result;

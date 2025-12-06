@@ -45,7 +45,8 @@ sub argvHandler {
                 $config->{'API'}->{'apisecret'} = $param[1];
             }
             default {
-                logMessage("Unknown parameter: \'$value\' - skip\n", 2, $loglevel);
+                $config->{'ARGV'}->{$param[0]} = $param[1];
+                #logMessage("Unknown parameter: \'$value\' - skip\n", 2, $loglevel);
             }
         }
     }
@@ -72,7 +73,15 @@ sub initDataPool {
             if (defined $datapool->{$marketname}->{'orders'}) {
                 logMessage("\t2. Reading orders from database - ok\n", 3, $loglevel);
                 $datapool->{$marketname}->{'analysis'}->{'orderlow'} = getOrderLow($datapool->{$marketname}->{'orders'}->{'closed'}->{'buy'}, $loglevel);
+                logMessage(sprintf ("Orderlow: %s\n%s\n",
+                    $datapool->{$marketname}->{'analysis'}->{'orderlow'},
+                    Dumper $datapool->{$marketname}->{'orders'}->{'closed'}->{'buy'}->{$datapool->{$marketname}->{'analysis'}->{'orderlow'}}
+                ), 3, $loglevel);
                 $datapool->{$marketname}->{'analysis'}->{'orderhigh'} = getOrderHigh($datapool->{$marketname}->{'orders'}->{'closed'}->{'buy'}, $loglevel);
+                logMessage(sprintf ("OrderHigh: %s\n%s\n",
+                    $datapool->{$marketname}->{'analysis'}->{'orderhigh'},
+                    Dumper $datapool->{$marketname}->{'orders'}->{'closed'}->{'buy'}->{$datapool->{$marketname}->{'analysis'}->{'orderhigh'}}
+                ), 3, $loglevel);
             } else {
                 logMessage("\t2. Reading orders from database - error\n", 1, $loglevel);
             }
@@ -157,9 +166,9 @@ sub getOrderLow {
     my $orders   = $_[0];
     my $loglevel = $_[1];
     my $result   = undef;
-    foreach my $order (values %{ $orders }) {
-        if (!defined $result || $result->{'price'} > $order->{'price'}) {
-            $result = dclone $order;
+    foreach my $orderId (keys %{ $orders }) {
+        if (!defined $result || $orders->{$result}->{'price'} > $orders->{$orderId}->{'price'}) {
+            $result = $orderId;
         }
     }
     return $result;
@@ -169,9 +178,9 @@ sub getOrderHigh {
     my $orders   = $_[0];
     my $loglevel = $_[1];
     my $result   = undef;
-    foreach my $order (values %{ $orders }) {
-        if (!defined $result || $result->{'price'} < $order->{'price'}) {
-            $result = dclone $order;
+    foreach my $orderId (keys %{ $orders }) {
+        if (!defined $result || $orders->{$result}->{'price'} < $orders->{$orderId}->{'price'}) {
+            $result = $orderId;
         }
     }
     return $result;

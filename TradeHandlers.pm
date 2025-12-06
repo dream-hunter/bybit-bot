@@ -38,9 +38,18 @@ sub tradeHandle {
 
             if (defined $order->{$orderId->{'orderId'}} && $order->{$orderId->{'orderId'}}->{'orderStatus'} eq 'Filled') {
                 logMessage("!!!We have a sell!!!\nWriting order database for market $marketname...\n", 3, $loglevel);
-                delete $datapool->{'orders'}->{'closed'}->{'buy'}->{$orderId->{'orderId'}};
+                # delete $datapool->{'orders'}->{'closed'}->{'buy'}->{$orderId->{'orderId'}};
+                delete $datapool->{'orders'}->{'closed'}->{'buy'}->{$datapool->{'analysis'}->{'orderlow'}};
                 $datapool->{'analysis'}->{'orderlow'}  = DataHandlers::getOrderLow ($datapool->{'orders'}->{'closed'}->{'buy'}, $loglevel);
+                logMessage(sprintf ("Orderlow: %s\n%s\n",
+                    $datapool->{$marketname}->{'analysis'}->{'orderlow'},
+                    Dumper $datapool->{$marketname}->{'orders'}->{'closed'}->{'buy'}->{$datapool->{$marketname}->{'analysis'}->{'orderlow'}}
+                ), 3, $loglevel);
                 $datapool->{'analysis'}->{'orderhigh'} = DataHandlers::getOrderHigh($datapool->{'orders'}->{'closed'}->{'buy'}, $loglevel);
+                logMessage(sprintf ("Orderlow: %s\n%s\n",
+                    $datapool->{$marketname}->{'analysis'}->{'orderlow'},
+                    Dumper $datapool->{$marketname}->{'orders'}->{'closed'}->{'buy'}->{$datapool->{$marketname}->{'analysis'}->{'orderhigh'}}
+                ), 3, $loglevel);
                 GetConfig::setConfig("DB-".uc($marketname).".json", $loglevel, $datapool->{'orders'});
 
                 # exit 0;
@@ -133,7 +142,8 @@ sub createSellOrder {
     my $pricePrecision = $datapool->{'marketinfo'}->{'priceFilter'}->{'tickSize'};
     my $basePrecision  = $datapool->{'marketinfo'}->{'lotSizeFilter'}->{'basePrecision'};
     my $minOrderAmt    = $datapool->{'marketinfo'}->{'lotSizeFilter'}->{'minOrderAmt'};
-    my $orderlow       = $datapool->{'analysis'}->{'orderlow'};
+    my $orderlowid     = $datapool->{'analysis'}->{'orderlow'};
+    my $orderlow   = $datapool->{'orders'}->{'closed'}->{'buy'}->{$orderlowid};
 
     #print Dumper $orderlow;
     #print "$baseCoin\n";
