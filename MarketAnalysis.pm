@@ -54,6 +54,7 @@ sub buyCheck {
 # Odrerlow
     if (!defined $datapool->{'analysis'}->{'orderlow'}) {
         logMessage("\t0. There is no orders in database;\n", 2, $loglevel);
+#        exit 0;
     } else {
         my $orderlowid = $datapool->{'analysis'}->{'orderlow'};
         my $orderlow   = $datapool->{'orders'}->{'closed'}->{'buy'}->{$orderlowid};

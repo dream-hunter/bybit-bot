@@ -27,6 +27,7 @@ $VERSION     = 1.00;
     getKlines
     wssFrameDecoder
     getOrdersRealTime
+    getOrdersHistory
     cancelAllOrders
 );
 
@@ -145,6 +146,30 @@ sub getOrdersRealTime {
     #print Dumper $orderId;
     logMessage("Getting order status:\n", 3, $loglevel);
     my $endpoint = $api->{'url'} . "/v5/order/realtime";
+    my $parameters = "category=spot";
+    if (defined $orderId) {
+        $parameters .= "&orderId=".$orderId;
+    }
+    if (defined $marketname) {
+        $parameters .= "&symbol=".$marketname;
+    }
+    my $method = "GET";
+    my ($result, $ping) = rest_api($endpoint, $parameters, $api, $method, $loglevel);
+    $result = getHashedArray($result->{'list'}, 'orderId');
+
+    return $result
+}
+
+sub getOrdersHistory {
+    my $orderId    = $_[0];
+    my $marketname = $_[1];
+    my $config     = $_[2];
+    my $loglevel   = $_[3];
+    my $result     = undef;
+    my $api        = $config->{'API'};
+    #print Dumper $orderId;
+    logMessage("Getting order history:\n", 3, $loglevel);
+    my $endpoint = $api->{'url'} . "/v5/order/history";
     my $parameters = "category=spot";
     if (defined $orderId) {
         $parameters .= "&orderId=".$orderId;

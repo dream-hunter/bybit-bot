@@ -91,6 +91,10 @@ cd ~/bybit-bot/ && /usr/bin/screen -dmSL "bybit-bot" /usr/bin/env perl bybit-bot
 
 ## ChangeLog
 
+### 2025-12-20
+
+- Added "-daemonize" lauch parameter. No need any software to launch program in background.
+
 ### 2025-12-01
 
 - Fixed wrong handling of orders database;

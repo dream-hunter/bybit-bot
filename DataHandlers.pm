@@ -44,6 +44,9 @@ sub argvHandler {
             when(/-secret/) {
                 $config->{'API'}->{'apisecret'} = $param[1];
             }
+            when(/-daemonize/) {
+                $config->{'ARGV'}->{'daemonize'} = 1;
+            }
             default {
                 $config->{'ARGV'}->{$param[0]} = $param[1];
                 #logMessage("Unknown parameter: \'$value\' - skip\n", 2, $loglevel);
