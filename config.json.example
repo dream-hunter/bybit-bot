@@ -22,8 +22,8 @@
                 "nextbuyorder"  : 0.975
             },
             "sell": {
-                "nextsellorder" : 0.03
-                "enable"        : 1,
+                "nextsellorder" : 0.03,
+                "enable"        : 1
             }
         },
         "ETHUSDT" : {
@@ -37,8 +37,8 @@
                 "nextbuyorder"  : 0.975
             },
             "sell": {
-                "nextsellorder" : 0.03
-                "enable"        : 1,
+                "nextsellorder" : 0.03,
+                "enable"        : 1
             }
         }
     }
