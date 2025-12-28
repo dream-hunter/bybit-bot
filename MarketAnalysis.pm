@@ -4,12 +4,8 @@ package MarketAnalysis;
 
 require Exporter;
 
-
-
 use strict;
 use lib '.';
-#use lib './binance-rest-api-pl/';
-#use BinanceAPI qw(rest_api);
 use ServiceSubs qw(logMessage);
 use POSIX;
 use Data::Dumper;
@@ -19,7 +15,6 @@ use vars qw($VERSION @ISA @EXPORT);
 $VERSION     = 1.00;
 @ISA         = qw(Exporter);
 @EXPORT      = qw(marketCheck buyCheck sellCheck);
-#@EXPORT_OK;
 
 sub marketCheck {
     my $datapool = $_[0];

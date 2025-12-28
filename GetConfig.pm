@@ -29,6 +29,10 @@ sub configHandler {
         logMessage( "WSS config not found - exit.\n", 1, $loglevel);
         exit 0;
     } else { logMessage("WSS config found;\n", 3, $loglevel); }
+    if (!defined $result->{"API"} || !defined $result->{"API"}->{"url"}) {
+        logMessage( "API config not found - exit.\n", 1, $loglevel);
+        exit 0;
+    } else { logMessage("API config found;\n", 3, $loglevel); }
 #    print Dumper $result;
     return $result;
 }
@@ -41,7 +45,7 @@ sub getConfig {
     if (-e $configfile) {
         my $json;
         {
-            local $/; #Enable 'slurp' mode
+            local $/;
             open my $fh, "<", "$configfile";
             $json = <$fh>;
             close $fh;
@@ -60,7 +64,7 @@ sub setConfig {
     my $configfile = $_[0];
     my $loglevel = $_[1];
     my $config = $_[2];
-    local $/; #Enable 'slurp' mode
+    local $/;
     open my $fh, ">", "$configfile";
     print $fh encode_json($config);
     close $fh;
@@ -73,7 +77,7 @@ sub appendConfig {
     my $configfile = $_[0];
     my $loglevel = $_[1];
     my $config = $_[2];
-    local $/; #Enable 'slurp' mode
+    local $/;
     open my $fh, ">>", "$configfile";
     my $dt = DateTime->now(time_zone => "local");
     print $fh "$dt : $config\n";
