@@ -58,7 +58,8 @@ if (defined $config->{ARGV}->{'daemonize'}) {
     if (defined $config->{"options"}->{"logfile"}) {
         $error_log_qfn  = $config->{"options"}->{"logfile"};
     }
-    my $pid_file_qfn  = "/var/run/$name/$name.pid";
+#    my $pid_file_qfn  = "/var/run/$name/$name.pid";
+    my $pid_file_qfn  = "$name.pid";
     if (defined $config->{"options"}->{"pidfile"}) {
         $pid_file_qfn  = $config->{"options"}->{"pidfile"};
     }
